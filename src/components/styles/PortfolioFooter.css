@@ -1,0 +1,25 @@
+/* Copyright (c) 2026 Job Bernardo. All rights reserved. See LICENSE for applicable third-party notices. */
+.bernardo-footer{position:relative;z-index:12;background:#111011;color:#eee9e3;padding:48px clamp(20px,3vw,56px) 18px;overflow:hidden;width:100%;box-sizing:border-box}
+.bernardo-footer-top{display:grid;grid-template-columns:2fr 1fr 1.35fr 1fr;gap:clamp(20px,4vw,78px);margin-bottom:54px}
+.bernardo-footer-intro{max-width:390px}.bernardo-footer-intro p{font-size:clamp(14px,1.16vw,19px);line-height:1.55;color:#aaa4a6;max-width:375px;margin:27px 0 0}
+.bernardo-footer-monogram{display:inline-flex;align-items:center;gap:6px;border-radius:100px;background:#c481ff;color:#151017;padding:7px 17px;text-decoration:none;font-size:22px;line-height:1;font-weight:1000;letter-spacing:-.09em}
+.bernardo-footer-monogram span{color:#32203f;font-size:15px}
+.bernardo-footer-column{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0}
+.bernardo-footer-column>span{font-family:monospace;letter-spacing:.15em;color:#777076;font-size:12px;margin-bottom:12px}
+.bernardo-footer-column a{color:#ebe7e3;font-size:clamp(14px,1.2vw,19px);text-decoration:none;transition:color .2s}
+.bernardo-footer-column a:hover{color:#c481ff}
+.bernardo-footer-column p{color:#979095;font-size:clamp(13px,1vw,16px);line-height:1.4;margin:0}
+.bernardo-footer-wordmark{font-family:Impact,'Arial Narrow','Helvetica Neue',sans-serif;font-weight:1000;letter-spacing:-.064em;line-height:.75;text-align:center;font-stretch:condensed;font-size:clamp(64px,17.6vw,365px);white-space:nowrap;color:#c481ff;width:100%;margin:0 auto 9px;transform:scaleX(.99);transform-origin:center}
+.bernardo-footer-bottom{border-top:1px solid #454045;display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:21px;font-family:monospace;font-size:clamp(9px,.9vw,12px);letter-spacing:.14em;color:#827c80}
+.bernardo-footer-bottom a{color:#aaa0a7;text-decoration:none;white-space:nowrap}.bernardo-footer-bottom a:hover{color:#c481ff}
+@media(max-width:850px){.bernardo-footer-top{grid-template-columns:1.2fr 1fr;row-gap:34px;margin-bottom:46px}.bernardo-footer-wordmark{font-size:17.2vw}}
+@media(max-width:480px){.bernardo-footer{padding:30px 14px 18px}.bernardo-footer-top{grid-template-columns:1fr 1fr;column-gap:12px;row-gap:28px}.bernardo-footer-intro{grid-column:1/-1}.bernardo-footer-column a{font-size:13px}.bernardo-footer-column>span{font-size:10px;margin-bottom:6px}.bernardo-footer-column p{font-size:12px}.bernardo-footer-wordmark{font-size:17vw;letter-spacing:-.06em}.bernardo-footer-bottom{align-items:flex-start;font-size:9px}}
+
+.bernardo-footer-intro p a{color:#eee9e3;text-decoration:none;overflow-wrap:anywhere}.bernardo-footer-intro p a:hover{color:#c481ff}
+
+/* Mobile footer wordmark must remain visible even when scroll animations do not fire. */
+@media(max-width:768px){
+ .bernardo-footer{overflow:hidden!important;padding-bottom:24px!important}
+ .bernardo-footer-wordmark{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;transform:none!important;font-size:clamp(36px,15vw,115px)!important;line-height:1!important;letter-spacing:-.075em!important;white-space:nowrap!important;width:100%!important;margin:12px auto 0!important;text-align:center!important;color:#c481ff!important}
+}
+:root[data-theme="light"] .bernardo-footer-wordmark{color:#8648c3!important}

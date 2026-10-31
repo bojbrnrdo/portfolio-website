@@ -1,0 +1,107 @@
+/* Copyright (c) 2026 Job Bernardo. All rights reserved. See LICENSE for applicable third-party notices. */
+.header {
+  display: flex;
+  max-width: var(--cMaxWidth);
+  width: var(--cWidth);
+  justify-content: space-between;
+  padding: 15px 0px;
+  margin-bottom: -80px;
+  box-sizing: border-box;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  z-index: 9999;
+}
+.header ul {
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  column-gap: 20px;
+  row-gap: 6px;
+  align-items: end;
+}
+.header ul li {
+  margin-left: 0px;
+  letter-spacing: 0.8px;
+  color: #ccc;
+  font-weight: 600;
+  cursor: pointer;
+}
+.navbar-connect {
+  position: absolute;
+  display: none;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  font-weight: 500;
+}
+.navbar-title {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+}
+@media only screen and (min-width: 500px) {
+  .header {
+    padding: 20px 0px;
+  }
+  .header ul {
+    flex-direction: row;
+    align-items: center;
+    font-size: 14px;
+  }
+  .header ul li {
+    color: #eae5ec;
+  }
+  .navbar-title {
+    font-size: 16px;
+  }
+}
+@media only screen and (min-width: 900px) {
+  .navbar-connect {
+    display: block;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .header {
+    padding: 35px 0px;
+  }
+  .header ul {
+    column-gap: 80px;
+    font-size: 16px;
+  }
+  .navbar-connect {
+    font-size: 16px;
+  }
+  .navbar-title {
+    font-size: 18px;
+  }
+}
+
+.portfolio-theme-toggle{position:absolute;right:-49px;top:25px;display:grid;place-items:center;width:35px;height:35px;border:1px solid currentColor;border-radius:50%;background:var(--backgroundColor);color:inherit;cursor:pointer;opacity:.9;font-size:21px;transition:background .25s,transform .25s}
+.portfolio-theme-toggle:hover{transform:scale(1.1);background:var(--accentColor);color:#180f21}
+@media(max-width:1199px){.portfolio-theme-toggle{top:12px;right:-35px;width:29px;height:29px;font-size:18px}}
+@media(max-width:768px){.portfolio-theme-toggle{right:0;top:64px}}
+
+/* Keep controls readable and separated on compact screens. */
+.portfolio-menu-toggle{display:none}
+@media(max-width:768px){
+ .header{width:100%!important;max-width:100%!important;left:0!important;transform:none!important;top:0!important;margin:0!important;min-height:60px;padding:12px 16px!important;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(13,9,18,.92);backdrop-filter:blur(18px);z-index:9999}
+ .navbar-title{font-size:16px!important;color:#f5edf7;position:relative;z-index:2}
+ .portfolio-menu-toggle{display:grid;place-items:center;margin-left:auto;margin-right:47px;border:1px solid rgba(194,164,255,.4);background:#26152d;color:#fff;border-radius:9px;width:36px;height:36px;cursor:pointer;font-size:21px;line-height:1}
+ .header ul{display:none!important;position:absolute;top:60px;left:0;right:0;width:100%;padding:18px!important;background:#130e19;border-bottom:1px solid #564367;box-shadow:0 18px 30px #0007;align-items:stretch!important;flex-direction:column!important;gap:4px!important;box-sizing:border-box}
+ .header ul.portfolio-nav-open{display:flex!important}
+ .header ul li{margin:0!important;width:100%;font-size:14px!important}
+ .header ul li a{display:block;padding:11px 8px;color:#f5edf7}
+ .portfolio-theme-toggle{position:absolute!important;top:12px!important;right:16px!important;width:36px!important;height:36px!important;color:#f4ebf8!important;background:#26152d!important;border:1px solid rgba(194,164,255,.4)!important;border-radius:9px!important;font-size:20px!important}
+ :root[data-theme="light"] .header{background:rgba(248,245,250,.94)}
+ :root[data-theme="light"] .navbar-title{color:#211629}
+ :root[data-theme="light"] .portfolio-menu-toggle,:root[data-theme="light"] .portfolio-theme-toggle{background:#eee4f5!important;color:#24172d!important;border-color:#baa2c7!important}
+ :root[data-theme="light"] .header ul{background:#f8f5fa;border-color:#d8c6e1}
+ :root[data-theme="light"] .header ul li a{color:#211629}
+}

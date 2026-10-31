@@ -1,0 +1,94 @@
+/* Copyright (c) 2026 Job Bernardo. All rights reserved. See LICENSE for applicable third-party notices. */
+.cta-section {
+  width: 100%;
+  padding: 80px 20px;
+  background-color: var(--backgroundColor);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 32px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.cta-btn-play {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cta-btn-play:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.cta-btn-hire {
+  background: var(--accentColor);
+  color: #000;
+  border: 1px solid var(--accentColor);
+}
+
+.cta-btn-hire:hover {
+  box-shadow: 0 8px 30px rgba(194, 164, 255, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media only screen and (max-width: 768px) {
+  .cta-section {
+    padding: 60px 20px;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cta-btn {
+    justify-content: center;
+    padding: 12px 28px;
+  }
+}
+
+.cta-btn-play{font-family:inherit;cursor:pointer}
+.chess-modal-overlay{position:fixed;inset:0;z-index:100000;overflow:auto;background:rgba(5,3,9,.88);backdrop-filter:blur(14px);display:flex;justify-content:center;align-items:flex-start;padding:30px 14px;overscroll-behavior:contain}
+.chess-modal-content{position:relative;width:min(100%,1160px);background:#0d0910;border:1px solid rgba(194,164,255,.28);border-radius:20px;box-shadow:0 24px 95px #000b;overflow:hidden}
+.chess-modal-close{position:absolute;right:18px;top:14px;z-index:100;border:1px solid #ffffff55;background:#24182c;color:white;width:43px;height:43px;border-radius:50%;font-size:29px;line-height:1;cursor:pointer}
+.chess-modal-close:hover{background:#653c80}
+.chess-modal-content .job-chess-page{min-height:0;padding:30px 25px 28px}
+.chess-modal-content .job-chess-heading{margin:8px auto 18px}
+.chess-modal-content .job-chess-heading h1{font-size:clamp(36px,5vw,56px)}
+.chess-modal-content .job-chess-top{padding-right:48px}
+@media(max-width:700px){.chess-modal-overlay{padding:8px}.chess-modal-content .job-chess-page{padding:16px 10px 22px}.chess-modal-close{right:10px;top:10px;width:37px;height:37px}.chess-modal-content .job-chess-heading{margin-top:26px}}
+
+/* Compact chess modal: maintain a comfortable board size with less empty space. */
+.chess-modal-content{width:min(92vw,850px);max-height:94vh;overflow-y:auto}
+.chess-modal-content .job-chess-layout{max-width:760px;gap:16px}
+.chess-modal-content .job-chess-panel{width:min(100%,440px)}
+.chess-modal-content .job-chess-sidebar{width:225px}
+.chess-modal-content .job-chess-page{padding:18px 22px 14px}
+.chess-modal-content .job-chess-heading{margin:4px auto 10px}
+.chess-modal-content .job-chess-heading h1{font-size:clamp(32px,4vw,43px)}
+.chess-modal-content .job-chess-heading p{margin:6px 0;font-size:12px}
+.chess-modal-content .job-chess-footer{margin-top:12px}
+@media(max-width:800px){.chess-modal-content{width:min(95vw,540px)}.chess-modal-content .job-chess-layout{gap:6px}.chess-modal-content .job-chess-panel{width:min(100%,400px)}.chess-modal-content .job-chess-sidebar{width:min(100%,400px);margin-top:4px}}
+@media(max-width:450px){.chess-modal-content .job-chess-page{padding:15px 12px}.chess-modal-content .job-chess-heading h1{font-size:34px}}
+
+@media(max-width:768px){.cta-section{padding:32px 16px 42px!important}}
