@@ -41,6 +41,40 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
 
   useEffect(() => {
+    // Section-to-section cinematic reveals on phones only. Never pre-hide content:
+    // if an observer cannot run, the page stays completely visible.
+    if (!window.matchMedia("(max-width: 768px)").matches ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        !("IntersectionObserver" in window)) return;
+    const selectors = [
+      ".about-section", ".whatIDO", ".career-section", ".work-section",
+      ".techstack-new", ".cta-section", ".certificates-section", ".bernardo-footer"
+    ];
+    const sections = selectors.map(selector => document.querySelector<HTMLElement>(selector))
+      .filter((section): section is HTMLElement => Boolean(section));
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const section = entry.target as HTMLElement;
+        observer.unobserve(section);
+        // Moving the entire section conflicts with pinned WebGL/ScrollTrigger content.
+        // Animate a heading or content group instead, without altering layout.
+        const subject = section.querySelector<HTMLElement>(
+          ".about-me, .what-box:first-child, .career-container > h2, .work-container > h2, .techstack-content > h2, .cta-content, .certificate-heading > h2, .bernardo-footer-intro"
+        );
+        if (subject && typeof subject.animate === "function") {
+          subject.animate([
+            { opacity: 0.25, transform: "translate3d(0,28px,0)", filter: "blur(5px)" },
+            { opacity: 1, transform: "translate3d(0,0,0)", filter: "blur(0)" }
+          ], { duration: 850, easing: "cubic-bezier(.22,1,.36,1)", fill: "none" });
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -7% 0px" });
+    sections.forEach(section => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     const resizeHandler = () => {
       setSplitText();
       setIsDesktopView(window.innerWidth > 1024);
