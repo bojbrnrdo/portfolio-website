@@ -21,29 +21,41 @@ const MainContainer = ({ children }: PropsWithChildren) => {
   const [isMobile] = useState<boolean>(window.innerWidth <= 768);
   const [shouldRenderCharacter, setShouldRenderCharacter] = useState(false);
   useEffect(() => {
-    if (!window.matchMedia("(max-width: 768px)").matches) return;
-    const selectors = [
-      ".about-me", ".whatIDO .what-box", ".career-section h2",
-      ".career-info-box", ".work-section h2", ".work-video-box",
-      ".techstack-content h2", ".techstack-row", ".cta-section",
-      ".certificate-heading", ".bernardo-footer-top"
+    // Mobile-only cinematic choreography. Never alter desktop ScrollTriggers.
+    const mobile = window.matchMedia("(max-width: 768px)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!mobile.matches || reduced.matches || !("IntersectionObserver" in window)) return;
+    const groups = [
+      ".about-me", ".whatIDO .what-box", ".career-container > h2",
+      ".career-info-box", ".work-container > h2", ".work-video-box",
+      ".techstack-content > h2", ".techstack-row", ".cta-section",
+      ".certificate-heading h2", ".bernardo-footer-intro",
+      ".bernardo-footer-column", ".bernardo-footer-wordmark"
     ];
-    const targets = Array.from(document.querySelectorAll<HTMLElement>(selectors.join(",")));
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const observer = new IntersectionObserver(entries => {
+    const targets = Array.from(document.querySelectorAll<HTMLElement>(groups.join(",")));
+    const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        entry.target.classList.add("mobile-section-visible");
-        observer.unobserve(entry.target);
+        const el = entry.target as HTMLElement;
+        el.classList.add("mobile-cinema-visible");
+        observer.unobserve(el);
       });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
-    targets.forEach(target => {
-      target.classList.add("mobile-section-reveal");
-      observer.observe(target);
+    }, { threshold: 0.08, rootMargin: "0px 0px -7% 0px" });
+    const frame = requestAnimationFrame(() => {
+      targets.forEach((el, index) => {
+        el.style.setProperty("--cinema-order", String(index % 3));
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.82) return;
+        el.classList.add("mobile-cinema-enter");
+        observer.observe(el);
+      });
     });
     return () => {
+      cancelAnimationFrame(frame);
       observer.disconnect();
-      targets.forEach(target => target.classList.remove("mobile-section-reveal", "mobile-section-visible"));
+      targets.forEach(el => {
+        el.classList.remove("mobile-cinema-enter", "mobile-cinema-visible");
+        el.style.removeProperty("--cinema-order");
+      });
     };
   }, []);
 
@@ -64,39 +76,6 @@ const MainContainer = ({ children }: PropsWithChildren) => {
       });
     });
     return () => { cancelled = true; cancelAnimationFrame(frame); };
-  }, []);
-
-
-  useEffect(() => {
-    // Observe the actual content, not the section container: a tall section
-    // can intersect well before its heading reaches the phone viewport.
-    if (!window.matchMedia("(max-width: 768px)").matches ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-        !("IntersectionObserver" in window)) return;
-
-    const targets = document.querySelectorAll<HTMLElement>(
-      ".about-me h3, .about-me p, .what-heading, .what-box-in, " +
-      ".career-container h2, .career-info-box, .work-container > h2, " +
-      ".work-video-box, .techstack-content > h2, .techstack-row, " +
-      ".cta-btn, .certificate-heading h2, .bernardo-footer-intro, " +
-      ".bernardo-footer-column, .bernardo-footer-wordmark"
-    );
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        observer.unobserve(entry.target);
-        const element = entry.target as HTMLElement;
-        if (typeof element.animate !== "function") return;
-        const wordmark = element.classList.contains("bernardo-footer-wordmark");
-        element.animate(wordmark
-          ? [{ opacity: .2 }, { opacity: 1 }]
-          : [{ opacity: .2, translate: "0 28px" },
-             { opacity: 1, translate: "0 0" }],
-          { duration: 900, easing: "cubic-bezier(.22,1,.36,1)" });
-      });
-    }, { threshold: 0.2, rootMargin: "0px 0px -3% 0px" });
-    targets.forEach(element => observer.observe(element));
-    return () => observer.disconnect();
   }, []);
 
 
