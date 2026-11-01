@@ -97,7 +97,9 @@ const Work = () => {
             <div className="work-box work-video-box" key={`project-video-${index + 1}`}>
               <div className="work-video-container" style={{ backgroundImage: `url(/portfolio-posters/project-${index + 1}.jpg)` }}>
                 <video
-                  src={`/portfolio-videos/project-${index + 1}.mp4`}
+                  src={window.matchMedia("(max-width: 768px)").matches
+                    ? `/portfolio-videos/mobile-project-${index + 1}.mp4`
+                    : `/portfolio-videos/project-${index + 1}.mp4`}
                   autoPlay muted loop playsInline preload="metadata"
                   poster={`/portfolio-posters/project-${index + 1}.jpg`}
                   aria-label={`Portfolio video ${index + 1}`}
