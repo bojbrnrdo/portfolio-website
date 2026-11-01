@@ -41,38 +41,49 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
 
   useEffect(() => {
-    // Section-to-section cinematic reveals on phones only. Never pre-hide content:
-    // if an observer cannot run, the page stays completely visible.
+    // Mobile section entrances: each section gets a subtle cinematic transition.
+    // Never pre-hide content: if the browser does not support animation, everything stays readable.
     if (!window.matchMedia("(max-width: 768px)").matches ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
         !("IntersectionObserver" in window)) return;
-    const selectors = [
-      ".about-section", ".whatIDO", ".career-section", ".work-section",
-      ".techstack-new", ".cta-section", ".certificates-section", ".bernardo-footer"
-    ];
-    const sections = selectors.map(selector => document.querySelector<HTMLElement>(selector))
-      .filter((section): section is HTMLElement => Boolean(section));
+
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(
+      ".about-section, .whatIDO, .career-section, .work-section, .techstack-new, .cta-section, .certificates-section, .bernardo-footer"
+    ));
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         const section = entry.target as HTMLElement;
         observer.unobserve(section);
-        // Moving the entire section conflicts with pinned WebGL/ScrollTrigger content.
-        // Animate a heading or content group instead, without altering layout.
-        const subject = section.querySelector<HTMLElement>(
-          ".about-me, .what-box:first-child, .career-container > h2, .work-container > h2, .techstack-content > h2, .cta-content, .certificate-heading > h2, .bernardo-footer-intro"
-        );
-        if (subject && typeof subject.animate === "function") {
-          subject.animate([
-            { opacity: 0.25, transform: "translate3d(0,28px,0)", filter: "blur(5px)" },
-            { opacity: 1, transform: "translate3d(0,0,0)", filter: "blur(0)" }
-          ], { duration: 850, easing: "cubic-bezier(.22,1,.36,1)", fill: "none" });
-        }
+        section.classList.add("mobile-scene-entered");
+        // Animate only safe inner elements, never a GSAP-pinned section or its WebGL canvas.
+        const selectors: Record<string,string> = {
+          "about-section": ".about-me h3, .about-me p",
+          "whatIDO": ".what-heading, .what-box-in",
+          "career-section": ".career-container h2, .career-info-box",
+          "work-section": ".work-container > h2, .work-video-box",
+          "techstack-new": ".techstack-content > h2, .techstack-row",
+          "cta-section": ".cta-btn",
+          "certificates-section": ".certificate-heading h2",
+          "bernardo-footer": ".bernardo-footer-intro, .bernardo-footer-column, .bernardo-footer-wordmark"
+        };
+        const name = Object.keys(selectors).find(key => section.classList.contains(key));
+        if (!name) return;
+        const elements = Array.from(section.querySelectorAll<HTMLElement>(selectors[name]));
+        elements.slice(0, name === "techstack-new" ? 4 : 10).forEach((element,index) => {
+          if (typeof element.animate !== "function") return;
+          element.animate([
+            { opacity: 0.38, transform: "translate3d(0,24px,0)" },
+            { opacity: 1, transform: "translate3d(0,0,0)" }
+          ], { duration: 700, delay: Math.min(index*75,400),
+               easing: "cubic-bezier(.22,1,.36,1)" });
+        });
       });
-    }, { threshold: 0.1, rootMargin: "0px 0px -7% 0px" });
+    }, { threshold: 0.07, rootMargin: "0px 0px -8% 0px" });
     sections.forEach(section => observer.observe(section));
     return () => observer.disconnect();
   }, []);
+
 
   useEffect(() => {
     const resizeHandler = () => {
