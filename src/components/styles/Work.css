@@ -402,3 +402,12 @@
  .work-video-box .work-video-container video{pointer-events:auto!important}
  .work-video-container{background:#101010}
 }
+
+/* Mobile must always expose a user-gesture playback path, regardless of autoplay policy. */
+.work-mobile-play{display:none}
+@media(max-width:768px){
+ .work-video-container{position:relative}
+ .work-mobile-play{display:flex;gap:9px;align-items:center;justify-content:center;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;border:1px solid #ffffff88;border-radius:80px;padding:13px 19px;background:#1c1325e8;color:white;font:600 14px/1.2 inherit;cursor:pointer;touch-action:manipulation;box-shadow:0 6px 22px #0008}
+ .work-is-playing .work-mobile-play{display:none}
+ .work-video-container video{pointer-events:auto!important}
+}

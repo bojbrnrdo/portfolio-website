@@ -27,7 +27,7 @@ const Work = () => {
         video.setAttribute("webkit-playsinline", "");
         video.setAttribute("muted", "");
         video.preload = "metadata";
-        video.controls = true; // iOS fallback when autoplay is blocked.
+        video.controls = true; // Native controls remain usable when autoplay is blocked.
       });
       if (!("IntersectionObserver" in window)) {
         cards.forEach(reveal);
@@ -97,9 +97,20 @@ const Work = () => {
               <div className="work-video-container">
                 <video
                   src={`/portfolio-videos/project-${index + 1}.mp4`}
-                  autoPlay muted loop playsInline preload="auto"
+                  autoPlay muted loop playsInline preload="metadata"
+                  poster={`/portfolio-posters/project-${index + 1}.jpg`}
                   aria-label={`Portfolio video ${index + 1}`}
+                  onPlay={(event) => event.currentTarget.closest(".work-video-box")?.classList.add("work-is-playing")}
+                  onPause={(event) => event.currentTarget.closest(".work-video-box")?.classList.remove("work-is-playing")}
                 />
+                <button type="button" className="work-mobile-play" aria-label={`Play portfolio video ${index + 1}`}
+                  onClick={(event) => {
+                    const video = event.currentTarget.parentElement?.querySelector("video");
+                    if (!video) return;
+                    video.muted = true;
+                    video.controls = true;
+                    video.play().catch(() => { video.controls = true; });
+                  }}>▶ <span>Play video</span></button>
               </div>
             </div>
           ))}
