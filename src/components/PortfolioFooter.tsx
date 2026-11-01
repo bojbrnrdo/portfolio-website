@@ -11,7 +11,23 @@ export default function PortfolioFooter() {
   const footerRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const footer = footerRef.current;
-    if (!footer || window.matchMedia("(prefers-reduced-motion: reduce)").matches || window.matchMedia("(max-width: 768px)").matches) return;
+    if (!footer || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      const sections = footer.querySelectorAll<HTMLElement>(".bernardo-footer-intro, .bernardo-footer-column");
+      if (!("IntersectionObserver" in window)) return;
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          (entry.target as HTMLElement).animate(
+            [{opacity: .4, transform: "translateY(18px)"}, {opacity: 1, transform: "translateY(0)"}],
+            {duration: 650, easing: "ease-out"}
+          );
+          observer.unobserve(entry.target);
+        });
+      }, {threshold:.1});
+      sections.forEach(section=>observer.observe(section));
+      return ()=>observer.disconnect();
+    }
     const ctx = gsap.context(() => {
       gsap.from(".bernardo-footer-intro, .bernardo-footer-column", {
         y: 32, opacity: 0, duration: 0.9, stagger: 0.11, ease: "power3.out",

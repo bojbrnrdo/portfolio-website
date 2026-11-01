@@ -12,7 +12,28 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function setSplitText() {
   ScrollTrigger.config({ ignoreMobileResize: true });
-  if (window.innerWidth < 900) return;
+  if (window.innerWidth < 900) {
+    // Touch devices need a simple native reveal rather than desktop text splitting.
+    if (document.documentElement.dataset.mobileRevealsReady === "true") return;
+    const targets = document.querySelectorAll<HTMLElement>(
+      ".about-me .para, .career-section h2, .whatIDO .what-heading, .work-section h2, .techstack-content h2"
+    );
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    document.documentElement.dataset.mobileRevealsReady = "true";
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const element = entry.target as HTMLElement;
+        element.animate(
+          [{ opacity: 0.45, transform: "translateY(18px)" }, { opacity: 1, transform: "translateY(0)" }],
+          { duration: 650, easing: "ease-out" }
+        );
+        observer.unobserve(element);
+      });
+    }, { threshold: 0.1 });
+    targets.forEach(element => observer.observe(element));
+    return;
+  }
   const paras: NodeListOf<ParaElement> = document.querySelectorAll(".para");
   const titles: NodeListOf<ParaElement> = document.querySelectorAll(".title");
 
@@ -76,5 +97,5 @@ export default function setSplitText() {
     );
   });
 
-  ScrollTrigger.addEventListener("refresh", () => setSplitText());
+  // Avoid a recursive refresh listener that accumulates on every resize.
 }
