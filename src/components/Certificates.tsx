@@ -46,7 +46,7 @@ export default function Certificates() {
   const cardHeight=cardWidth/1.45;
   const camera=new THREE.PerspectiveCamera(34,1,.1,60);
   const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,mobile()?1:1.5));
   renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.domElement.setAttribute('aria-hidden','true');
   renderer.domElement.style.cssText='width:100%;height:100%;display:block';
@@ -62,7 +62,7 @@ export default function Certificates() {
   const meshes:THREE.Mesh[]=[];
   const materials:THREE.MeshBasicMaterial[]=[];
   const loader=new THREE.TextureLoader();
-  let disposed=false,frame=0,lastShown=-1,current=0,target=0;
+  let disposed=false,frame=0,lastShown=-1,current=0,target=0,visible=true;
   for(let i=0;i<COUNT;i++){
     const mat=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide,transparent:true,opacity:1,depthWrite:true});
     materials.push(mat);
@@ -101,6 +101,7 @@ export default function Certificates() {
   };
   renderer.domElement.addEventListener('click',onClick);
   const tick=()=>{
+    if(disposed || !visible) {frame=0;return;}
     current+=(target-current)*.075;
     group.rotation.y=-current*angleStep;
     group.position.y=current*pitch;
@@ -110,27 +111,40 @@ export default function Certificates() {
     renderer.render(scene,camera);
     frame=requestAnimationFrame(tick);
   };
-  resize();tick();
+  resize();
+  const visibilityObserver=new IntersectionObserver(entries=>{
+    visible=entries[0]?.isIntersecting??false;
+    if(visible && !frame) frame=requestAnimationFrame(tick);
+  },{rootMargin:'120px 0px'});
+  visibilityObserver.observe(section);
+  frame=requestAnimationFrame(tick);
   let touchX = 0;
   const onTouchStart = (e:TouchEvent) => { touchX = e.touches[0]?.clientX ?? 0; };
   const onTouchEnd = (e:TouchEvent) => {
     const delta = touchX - (e.changedTouches[0]?.clientX ?? touchX);
-    if(Math.abs(delta)>25) target=Math.max(0,Math.min(COUNT-1,Math.round(target)+(delta>0?1:-1)));
+    if(Math.abs(delta)>35){
+      const next=Math.max(0,Math.min(COUNT-1,Math.round(target)+(delta>0?1:-1)));
+      const scroll=trigger;
+      if(scroll && window.innerWidth<=768){
+        // Swipe and vertical scrolling update the same underlying timeline.
+        window.scrollTo({top:scroll.start+(next/(COUNT-1))*(scroll.end-scroll.start),behavior:'smooth'});
+      } else target=next;
+    }
   };
   if(window.innerWidth<=768){
     host.addEventListener('touchstart',onTouchStart,{passive:true});
     host.addEventListener('touchend',onTouchEnd,{passive:true});
   }
-  const trigger=window.innerWidth<=768?null:ScrollTrigger.create({
+  const trigger=ScrollTrigger.create({
    id:'certificates-webgl',trigger:section,start:'top top',
-   end:()=>'+='+Math.round(window.innerHeight*4.2),
+   end:()=>'+='+Math.round(window.innerHeight*(mobile()?3.4:4.2)),
    pin:true,pinSpacing:true,scrub:.65,anticipatePin:1,
    invalidateOnRefresh:true,
    onUpdate:self=>{target=self.progress*(COUNT-1);}
   });
   const observer=new ResizeObserver(resize);observer.observe(host);
   return()=>{
-    disposed=true;trigger?.kill();host.removeEventListener('touchstart',onTouchStart);host.removeEventListener('touchend',onTouchEnd);observer.disconnect();cancelAnimationFrame(frame);
+    disposed=true;visibilityObserver.disconnect();trigger.kill();host.removeEventListener('touchstart',onTouchStart);host.removeEventListener('touchend',onTouchEnd);observer.disconnect();cancelAnimationFrame(frame);
     renderer.domElement.removeEventListener('click',onClick);
     for(const m of materials){m.map?.dispose();m.dispose();}
     geometry.dispose();renderer.dispose();
