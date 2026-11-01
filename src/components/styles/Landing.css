@@ -634,3 +634,9 @@ h2.landing-info-h2 {
 }
 
 @media(max-width:768px){.landing-section,.landing-container{min-height:0!important;height:auto!important}.landing-container{padding-bottom:35px!important}}
+
+/* Transparent portrait cutout: remove the old square photo frame on phones. */
+@media(max-width:768px){
+ .mobile-photo{border-radius:0!important;overflow:visible!important;aspect-ratio:auto!important;box-shadow:none!important;background:transparent!important;-webkit-mask-image:none!important;mask-image:none!important}
+ .mobile-photo img{height:auto!important;object-fit:contain!important;filter:drop-shadow(0 14px 22px rgba(120,72,164,.22))!important}
+}

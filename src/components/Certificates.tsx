@@ -75,7 +75,7 @@ export default function Certificates() {
     loader.load(certificateList[i].image,texture=>{
       if(disposed){texture.dispose();return;}
       texture.colorSpace=THREE.SRGBColorSpace;
-      texture.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
+      texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
       mat.map=texture;mat.needsUpdate=true;
     });
   }
