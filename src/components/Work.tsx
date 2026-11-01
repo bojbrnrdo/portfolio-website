@@ -17,6 +17,7 @@ const Work = () => {
         video.muted = true;
         video.defaultMuted = true;
         video.playsInline = true;
+        if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) video.load();
         const attempt = video.play();
         if (attempt) attempt.catch(() => {
           video.closest(".work-video-box")?.classList.add("work-needs-tap");
@@ -94,13 +95,14 @@ const Work = () => {
         <div className="work-flex">
           {Array.from({ length: 8 }, (_, index) => (
             <div className="work-box work-video-box" key={`project-video-${index + 1}`}>
-              <div className="work-video-container">
+              <div className="work-video-container" style={{ backgroundImage: `url(/portfolio-posters/project-${index + 1}.jpg)` }}>
                 <video
                   src={`/portfolio-videos/project-${index + 1}.mp4`}
                   autoPlay muted loop playsInline preload="metadata"
                   poster={`/portfolio-posters/project-${index + 1}.jpg`}
                   aria-label={`Portfolio video ${index + 1}`}
                   onPlay={(event) => event.currentTarget.closest(".work-video-box")?.classList.add("work-is-playing")}
+                  onLoadedData={(event) => { if (window.matchMedia("(max-width: 768px)").matches) event.currentTarget.play().catch(() => {}); }}
                   onPause={(event) => event.currentTarget.closest(".work-video-box")?.classList.remove("work-is-playing")}
                 />
                 <button type="button" className="work-mobile-play" aria-label={`Play portfolio video ${index + 1}`}

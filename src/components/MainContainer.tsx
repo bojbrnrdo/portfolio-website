@@ -21,6 +21,33 @@ const MainContainer = ({ children }: PropsWithChildren) => {
   const [isMobile] = useState<boolean>(window.innerWidth <= 768);
   const [shouldRenderCharacter, setShouldRenderCharacter] = useState(false);
   useEffect(() => {
+    if (!window.matchMedia("(max-width: 768px)").matches) return;
+    const selectors = [
+      ".about-me", ".whatIDO .what-box", ".career-section h2",
+      ".career-info-box", ".work-section h2", ".work-video-box",
+      ".techstack-content h2", ".techstack-row", ".cta-section",
+      ".certificate-heading", ".bernardo-footer-top"
+    ];
+    const targets = Array.from(document.querySelectorAll<HTMLElement>(selectors.join(",")));
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("mobile-section-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
+    targets.forEach(target => {
+      target.classList.add("mobile-section-reveal");
+      observer.observe(target);
+    });
+    return () => {
+      observer.disconnect();
+      targets.forEach(target => target.classList.remove("mobile-section-reveal", "mobile-section-visible"));
+    };
+  }, []);
+
+  useEffect(() => {
     if (window.innerWidth > 768) return;
     // Start only after all lazy-loaded sections have mounted.
     let cancelled = false;

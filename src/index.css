@@ -211,3 +211,16 @@ body {
 :root[data-theme="light"] .landing-h2-info{color:#211629}
 :root[data-theme="light"] .landing-info h3{color:#8648c3}
 @media(prefers-reduced-motion:reduce){.portfolio-theme-toggle{transition:none}}
+
+/* Mobile section transitions: visible by default if JS/observers are unavailable. */
+@media(max-width:768px) and (prefers-reduced-motion:no-preference){
+ .mobile-section-reveal:not(.mobile-section-visible){
+   opacity:.025!important;transform:translate3d(0,32px,0)!important;
+ }
+ .mobile-section-reveal{
+   transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)!important;
+ }
+ .mobile-section-reveal.mobile-section-visible{
+   opacity:1!important;transform:translate3d(0,0,0)!important;
+ }
+}

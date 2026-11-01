@@ -411,3 +411,10 @@
  .work-is-playing .work-mobile-play{display:none}
  .work-video-container video{pointer-events:auto!important}
 }
+
+@media(max-width:768px){
+ .work-video-container{background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important}
+ .work-video-box:not(.work-is-playing) .work-video-container video{opacity:0!important}
+ .work-video-box.work-is-playing .work-video-container video{opacity:1!important}
+ .work-mobile-play{font-family:inherit!important}
+}
