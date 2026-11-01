@@ -41,46 +41,34 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
 
   useEffect(() => {
-    // Mobile section entrances: each section gets a subtle cinematic transition.
-    // Never pre-hide content: if the browser does not support animation, everything stays readable.
+    // Observe the actual content, not the section container: a tall section
+    // can intersect well before its heading reaches the phone viewport.
     if (!window.matchMedia("(max-width: 768px)").matches ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
         !("IntersectionObserver" in window)) return;
 
-    const sections = Array.from(document.querySelectorAll<HTMLElement>(
-      ".about-section, .whatIDO, .career-section, .work-section, .techstack-new, .cta-section, .certificates-section, .bernardo-footer"
-    ));
+    const targets = document.querySelectorAll<HTMLElement>(
+      ".about-me h3, .about-me p, .what-heading, .what-box-in, " +
+      ".career-container h2, .career-info-box, .work-container > h2, " +
+      ".work-video-box, .techstack-content > h2, .techstack-row, " +
+      ".cta-btn, .certificate-heading h2, .bernardo-footer-intro, " +
+      ".bernardo-footer-column, .bernardo-footer-wordmark"
+    );
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        const section = entry.target as HTMLElement;
-        observer.unobserve(section);
-        section.classList.add("mobile-scene-entered");
-        // Animate only safe inner elements, never a GSAP-pinned section or its WebGL canvas.
-        const selectors: Record<string,string> = {
-          "about-section": ".about-me h3, .about-me p",
-          "whatIDO": ".what-heading, .what-box-in",
-          "career-section": ".career-container h2, .career-info-box",
-          "work-section": ".work-container > h2, .work-video-box",
-          "techstack-new": ".techstack-content > h2, .techstack-row",
-          "cta-section": ".cta-btn",
-          "certificates-section": ".certificate-heading h2",
-          "bernardo-footer": ".bernardo-footer-intro, .bernardo-footer-column, .bernardo-footer-wordmark"
-        };
-        const name = Object.keys(selectors).find(key => section.classList.contains(key));
-        if (!name) return;
-        const elements = Array.from(section.querySelectorAll<HTMLElement>(selectors[name]));
-        elements.slice(0, name === "techstack-new" ? 4 : 10).forEach((element,index) => {
-          if (typeof element.animate !== "function") return;
-          element.animate([
-            { opacity: 0.38, transform: "translate3d(0,24px,0)" },
-            { opacity: 1, transform: "translate3d(0,0,0)" }
-          ], { duration: 700, delay: Math.min(index*75,400),
-               easing: "cubic-bezier(.22,1,.36,1)" });
-        });
+        observer.unobserve(entry.target);
+        const element = entry.target as HTMLElement;
+        if (typeof element.animate !== "function") return;
+        const wordmark = element.classList.contains("bernardo-footer-wordmark");
+        element.animate(wordmark
+          ? [{ opacity: .2 }, { opacity: 1 }]
+          : [{ opacity: .2, translate: "0 28px" },
+             { opacity: 1, translate: "0 0" }],
+          { duration: 900, easing: "cubic-bezier(.22,1,.36,1)" });
       });
-    }, { threshold: 0.07, rootMargin: "0px 0px -8% 0px" });
-    sections.forEach(section => observer.observe(section));
+    }, { threshold: 0.2, rootMargin: "0px 0px -3% 0px" });
+    targets.forEach(element => observer.observe(element));
     return () => observer.disconnect();
   }, []);
 

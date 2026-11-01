@@ -11,6 +11,22 @@ export default function PortfolioFooter() {
   const footerRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const footer = footerRef.current;
+    if (!footer) return;
+    const wordmark = footer.querySelector<HTMLElement>(".bernardo-footer-wordmark");
+    if (!wordmark || !window.matchMedia("(max-width: 768px)").matches) return;
+    const fit = () => {
+      const available = footer.clientWidth;
+      const natural = wordmark.offsetWidth;
+      if (natural > 0) wordmark.style.setProperty("--bernardo-fit", String(Math.min(1, (available - 4) / natural)));
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(footer);
+    document.fonts?.ready.then(fit).catch(() => {});
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    const footer = footerRef.current;
     if (!footer || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(max-width: 768px)").matches) {
       const sections = footer.querySelectorAll<HTMLElement>(".bernardo-footer-intro, .bernardo-footer-column");

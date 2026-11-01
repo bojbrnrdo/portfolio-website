@@ -53,3 +53,23 @@
  .bernardo-footer-top{column-gap:10px}
  .bernardo-footer-column a{font-size:12px}
 }
+
+
+/* Full-bleed signature: dynamically fitted to the exact phone width. */
+@media(max-width:768px){
+ .bernardo-footer{padding-bottom:0!important}
+ .bernardo-footer-wordmark{
+   display:block!important;
+   width:max-content!important;
+   max-width:none!important;
+   font-size:30vw!important;
+   line-height:.83!important;
+   letter-spacing:-.075em!important;
+   margin:34px 0 0!important;
+   left:50%!important;
+   text-align:left!important;
+   transform:translateX(-50%) scaleX(var(--bernardo-fit,1))!important;
+   transform-origin:center bottom!important;
+   white-space:nowrap!important;
+ }
+}
