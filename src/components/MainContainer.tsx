@@ -25,8 +25,15 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     // Start only after all lazy-loaded sections have mounted.
     let cancelled = false;
     const frame = requestAnimationFrame(() => {
-      import("./utils/initialFX").then(({ initialFX }) => {
-        if (!cancelled) initialFX();
+      Promise.all([
+        import("./utils/initialFX"),
+        import("./utils/GsapScroll")
+      ]).then(([{ initialFX }, { setAllTimeline }]) => {
+        if (cancelled) return;
+        initialFX();
+        // The 3D character is not mounted on mobile, so its loader cannot set up
+        // the shared Career scroll timeline. Initialize that timeline explicitly.
+        setAllTimeline();
       });
     });
     return () => { cancelled = true; cancelAnimationFrame(frame); };
