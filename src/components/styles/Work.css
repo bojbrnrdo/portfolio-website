@@ -433,3 +433,10 @@
               transform 1s cubic-bezier(.22,1,.36,1)!important;
  }
 }
+
+/* Mobile work videos are decorative: no tap targets, overlays or controls. */
+@media(max-width:768px){
+ .work-mobile-play{display:none!important}
+ .work-video-container video{pointer-events:none!important}
+ .work-video-container{pointer-events:none}
+}

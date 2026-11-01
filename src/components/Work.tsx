@@ -17,10 +17,10 @@ const Work = () => {
         video.muted = true;
         video.defaultMuted = true;
         video.playsInline = true;
-        if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) video.load();
         const attempt = video.play();
         if (attempt) attempt.catch(() => {
-          video.closest(".work-video-box")?.classList.add("work-needs-tap");
+          // Autoplay is a browser policy. Keep the poster visible if blocked.
+          video.closest(".work-video-box")?.classList.remove("work-is-playing");
         });
       };
       videos.forEach(video => {
@@ -28,7 +28,7 @@ const Work = () => {
         video.setAttribute("webkit-playsinline", "");
         video.setAttribute("muted", "");
         video.preload = "metadata";
-        video.controls = true; // Native controls remain usable when autoplay is blocked.
+        video.controls = false; // Decorative autoplay video, not interactive.
       });
       if (!("IntersectionObserver" in window)) {
         cards.forEach(reveal);
@@ -107,14 +107,6 @@ const Work = () => {
                   onLoadedData={(event) => { if (window.matchMedia("(max-width: 768px)").matches) event.currentTarget.play().catch(() => {}); }}
                   onPause={(event) => event.currentTarget.closest(".work-video-box")?.classList.remove("work-is-playing")}
                 />
-                <button type="button" className="work-mobile-play" aria-label={`Play portfolio video ${index + 1}`}
-                  onClick={(event) => {
-                    const video = event.currentTarget.parentElement?.querySelector("video");
-                    if (!video) return;
-                    video.muted = true;
-                    video.controls = true;
-                    video.play().catch(() => { video.controls = true; });
-                  }}>▶ <span>Play video</span></button>
               </div>
             </div>
           ))}
