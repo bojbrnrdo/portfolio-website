@@ -395,3 +395,10 @@
  .work-section h2{margin:12px 0 22px!important}
  .work-flex{height:auto!important;min-height:0!important}
 }
+
+/* Mobile: show content even before viewport intersection and allow native playback controls. */
+@media(max-width:768px){
+ .work-video-box.work-mobile-ready{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}
+ .work-video-box .work-video-container video{pointer-events:auto!important}
+ .work-video-container{background:#101010}
+}

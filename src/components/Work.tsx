@@ -8,19 +8,46 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Work = () => {
   useEffect(() => {
-    // Disable pinning on mobile to allow scrolling
-    if (window.innerWidth <= 768) {
-      const cards = document.querySelectorAll<HTMLElement>(".work-video-box");
-      if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Native vertical mobile layout; explicitly manage playback on iOS/Android.
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      const cards = Array.from(document.querySelectorAll<HTMLElement>(".work-video-box"));
+      const videos = cards.map(card => card.querySelector("video")).filter((v): v is HTMLVideoElement => Boolean(v));
+      const reveal = (card: HTMLElement) => card.classList.add("work-mobile-visible");
+      const play = (video: HTMLVideoElement) => {
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        const attempt = video.play();
+        if (attempt) attempt.catch(() => {
+          video.closest(".work-video-box")?.classList.add("work-needs-tap");
+        });
+      };
+      videos.forEach(video => {
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+        video.setAttribute("muted", "");
+        video.preload = "metadata";
+        video.controls = true; // iOS fallback when autoplay is blocked.
+      });
+      if (!("IntersectionObserver" in window)) {
+        cards.forEach(reveal);
+        videos.forEach(play);
+        return;
+      }
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add("work-mobile-visible");
-          else entry.target.classList.remove("work-mobile-visible");
+          const card = entry.target as HTMLElement;
+          const video = card.querySelector("video");
+          if (entry.isIntersecting) {
+            reveal(card);
+            if (video) play(video);
+          } else if (video) {
+            video.pause();
+          }
         });
-      }, { threshold: 0.1 });
+      }, { threshold: 0.05, rootMargin: "80px 0px" });
       cards.forEach(card => { card.classList.add("work-mobile-ready"); observer.observe(card); });
-      return () => observer.disconnect();
-
+      return () => { observer.disconnect(); videos.forEach(video => video.pause()); };
     }
 
     const track = document.querySelector<HTMLElement>(".work-flex");

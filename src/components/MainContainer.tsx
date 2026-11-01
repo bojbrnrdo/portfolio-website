@@ -20,6 +20,18 @@ const MainContainer = ({ children }: PropsWithChildren) => {
   );
   const [isMobile] = useState<boolean>(window.innerWidth <= 768);
   const [shouldRenderCharacter, setShouldRenderCharacter] = useState(false);
+  useEffect(() => {
+    if (window.innerWidth > 768) return;
+    // Start only after all lazy-loaded sections have mounted.
+    let cancelled = false;
+    const frame = requestAnimationFrame(() => {
+      import("./utils/initialFX").then(({ initialFX }) => {
+        if (!cancelled) initialFX();
+      });
+    });
+    return () => { cancelled = true; cancelAnimationFrame(frame); };
+  }, []);
+
 
   useEffect(() => {
     const resizeHandler = () => {
